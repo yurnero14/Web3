@@ -6,6 +6,8 @@ const {check, validationResult} = require('express-validator');
 const morgan = require('morgan');
 // const dao = require('./dao');
 const userDao = require('./dao-users');
+const cDao = require('./categories-dao');
+const rDao = require('./dao-round');
 const cors = require('cors');
 
 //passport related imports
@@ -22,6 +24,11 @@ const port = 3001;
 // set up the midddleware==>> Links the application needed for the web app
 app.use(morgan('dev'));
 app.use(express.json());
+
+function generateRandomLetter(){
+  const letters = 'abcdefghijklmnopqrstuvwxyz';
+  return letters[Math.floor(Math.random() * letters.length)];
+}
 
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -97,7 +104,119 @@ app.delete('/api/sessions/current', (req,res) =>{
     res.status(200).json({});
   });
 });
+/*this one is just to check*/
+app.get('/api/catidget/:category', async (req,res)=>{
+  try{
+    const cdId = await cDao.getCategoryId(req.params.category);
+    if(cdId.error){
+      res.status(404).json(cdId);
+    }
+    else{
+      res.status(200).json(cdId);
+      
+    }
+  }
+  catch(err){
+    res.status(500).end();
+  }
+  
 
+});
+
+app.post('/api/round', async(req,res)=>{
+  
+  try{
+    if(Object.keys(req.body).length === 0) {
+      return res.status(422).json({error: `Empty body request`})
+    }
+
+    if(req.body.category==undefined || req.body.difficulty == undefined || req.body.difficulty > 4 || req.body.difficulty < 1){
+      return res.status(422).json({error: 'Invalid input'});
+    }
+    const cdId = await cDao.getCategoryId(req.body.category);
+    if(cdId.error){
+      res.status(404).json(cdId);
+    }
+    else{
+      const rand = generateRandomLetter();
+      
+      const round = {
+        cat_Id: cdId,
+        letter: rand,
+        difficulty: req.body.difficulty
+      }
+      
+      const result = await rDao.createRound(round);
+      res.json(result);
+    
+    }
+  }
+  catch(err){
+    res.status(503).json();
+  }
+
+})
+
+app.get('/api/roundId', async(req, res)=>{
+  try{
+    if(Object.keys(req.body).length === 0) {
+      return res.status(422).json({error: `Empty body request`})
+    }
+    const cdId = await cDao.getCategoryId(req.body.category);
+    if(cdId.error){
+      res.status(404).json(cdId);
+    }
+    else{
+      const result = await rDao.getRoundId(cdId, req.body.letter);
+      return res.status(200).json(result);
+    }
+  }
+  catch(err){
+    res.status(501).json();
+  }
+})
+// app.get('/api/roundIds', async(req, res)=>{
+//   try{
+//     const cdId = await cDao.getCategoryId(req.body.category);
+//     if(cdId.error){
+//       res.status(404).json(cdId);
+//     }
+//     else{
+//       const result = await rDao.getRoundIds(cdId, req.body.letter);
+//       return res.status(200).json(result);
+//     }
+//   }
+//   catch(err){
+//     res.status(501).json();
+//   }
+// })
+app.get('/api/countRound', async(req, res)=>{
+  try{
+    if(Object.keys(req.body).length === 0) {
+      return res.status(422).json({error: `Empty body request`})
+    }
+    if(req.body.category==undefined || req.body.letter==undefined ||req.body.letter.length !=1){
+      return res.status(422).json({error: 'Invalid input'});
+    }
+
+    const cdId = await cDao.getCategoryId(req.body.category);
+    if(cdId.error){
+      res.status(404).json(cdId);
+    }
+    
+    else{
+      if(req.body.letter.toUpperCase()){
+        req.body.letter = req.body.letter.toLowerCase();
+      }
+      const result = await rDao.countRoundId(cdId, req.body.letter);
+      return res.status(200).json(result);
+    }
+    
+  }
+  catch(err){
+    res.status(501).json();
+  }
+})
 // activate the server
 const PORT = 3001;
 app.listen(PORT, () => {
