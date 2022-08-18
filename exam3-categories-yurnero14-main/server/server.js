@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const userDao = require('./dao-users');
 const cDao = require('./categories-dao');
 const rDao = require('./dao-round');
+const resDao = require('./dao-response');
 const cors = require('cors');
 
 //passport related imports
@@ -123,7 +124,7 @@ app.get('/api/catidget/:category', async (req,res)=>{
 
 });
 
-app.post('/api/round', async(req,res)=>{
+app.post('/api/RoundAndResponse', async(req,res)=>{
   
   try{
     if(Object.keys(req.body).length === 0) {
@@ -143,12 +144,26 @@ app.post('/api/round', async(req,res)=>{
       const round = {
         cat_Id: cdId,
         letter: rand,
-        difficulty: req.body.difficulty
+        difficulty: req.body.difficulty,
+        StartTime: Math.floor(Date.now() / 1000)
       }
+
       
       const result = await rDao.createRound(round);
-      res.json(result);
+      // const resp = await resDao.createResponse(req.user.id, );
+      // console.log(typeof(result));
+      const b= parseInt(result);
+      const resp = {
+        user_id: 1,
+        round_id: b,
+      }
+      // console.log(b);
+      // console.log(typeof(b));
+      const reso = await resDao.createResponse(resp);
     
+      // await resDao.createResponse(resp);
+      res.json(result);
+      
     }
   }
   catch(err){

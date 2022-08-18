@@ -1,12 +1,12 @@
 'use strict';
 
 const db = require('./Db');
-const cDao = require('./categories-dao');
+// const cDao = require('./categories-dao');
 
-function generateRandomLetter(){
-    const letters = 'abcdefghijklmnopqrstuvwxyz';
-    return letters[Math.floor(Math.random() * letters.length)];
-}
+// function generateRandomLetter(){
+//     const letters = 'abcdefghijklmnopqrstuvwxyz';
+//     return letters[Math.floor(Math.random() * letters.length)];
+// }
 
 function Round (id,category,letter,difficulty)
 {
@@ -19,14 +19,16 @@ exports.createRound = (round) =>{
     return new Promise((resolve, reject)=>{
         // const cdId = cDao.getCategoryId(category);
         // const rand = generateRandomLetter();
-        const sql = `INSERT INTO rounds(cat_Id, letter, difficulty) VALUES(?,?,?)`;
-        db.run(sql, [round.cat_Id, round.letter, round.difficulty], (err)=>{
+        const sql = `INSERT INTO rounds(cat_Id, letter, difficulty, StartTime) VALUES(?,?,?,?)`;
+        db.run(sql, [round.cat_Id, round.letter, round.difficulty, round.StartTime], (err)=>{
             if(err){
                 reject(err);
                 return;
             }
             else{
-                resolve(round);
+                // const result = exports.getRound(this.lastID);
+                resolve(exports.getRoundId(round.cat_Id, round.letter)); //this will give me the last inserted row 
+
             }
         });
     });
@@ -81,6 +83,21 @@ exports.countRoundId = (cat_Id, letter) =>{
             }
             else{
                 resolve(row.count);
+            }
+        } );
+    })
+}
+
+exports.getRound = (id) =>{
+    return new Promise ((resolve, reject)=>{
+        const sql = `SELECT * from rounds where id =?`;
+        db.get(sql, [id], (err, row)=>{
+            if(err){
+                reject(err);
+                return;
+            }
+            else{
+                resolve(row);
             }
         } );
     })
