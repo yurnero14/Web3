@@ -20,15 +20,16 @@ exports.createRound = (round) =>{
         // const cdId = cDao.getCategoryId(category);
         // const rand = generateRandomLetter();
         const sql = `INSERT INTO rounds(cat_Id, letter, difficulty, StartTime) VALUES(?,?,?,?)`;
-        db.run(sql, [round.cat_Id, round.letter, round.difficulty, round.StartTime], (err)=>{
+        db.run(sql, [round.cat_Id, round.letter, round.difficulty, round.StartTime], function (err){
             if(err){
                 reject(err);
                 return;
             }
             else{
                 // const result = exports.getRound(this.lastID);
-                resolve(exports.getRoundId(round.cat_Id, round.letter)); //this will give me the last inserted row 
-
+                // resolve(exports.getRoundId(round.cat_Id, round.letter)); //this will give me the last inserted row 
+                // console.log(this.lastID);
+                resolve({id: this.lastID, cat_Id: round.cat_Id, letter: round.letter, difficulty: round.difficulty});
             }
         });
     });
@@ -102,3 +103,42 @@ exports.getRound = (id) =>{
         } );
     })
 }
+
+exports.getLetter = (id) =>{
+    return new Promise ((resolve, reject)=>{
+        const sql = `SELECT letter from rounds where id =?`;
+        db.get(sql, [id], (err, row)=>{
+            if(err){
+                reject(err);
+                return;
+            }
+            else{
+                resolve(row.letter);
+            }
+        } );
+    })
+}
+
+exports.getRoundList = (cat_Id, letter) =>{
+    return new Promise ((resolve, reject)=>{
+        const sql = `SELECT * from rounds where cat_Id =? and letter =?`;
+        db.all(sql, [cat_Id, letter], (err, row)=>{
+            if(err){
+                reject(err);
+                return;
+            }
+            else{
+                // const rounds = row.map((r)=>{
+                //     new Round(r.id, r.cat_Id, r.letter, r.difficulty);
+                // } );
+                console.log(row)
+                resolve(row);
+            }
+        } );
+    })
+}
+exports.getRoundList(2, 'l');
+
+//get category//
+//get difficulty//
+// exports.getRoundList(2,'o');

@@ -107,3 +107,58 @@ const axios = require('axios');
 //         console.log('success');
 //     }
 // })
+
+// let sql = `SELECT lower(Data) FROM Category_Data where cat_Id = 2`;
+// db.all(sql, (err,row)=>{
+//     if(err)
+//     {
+//         console.log(err);
+//     }
+//     else{
+//         console.log(row);
+//     }
+   
+// })
+
+exports.getAllCategoryData =()=>{
+    return new Promise((resolve, reject)=>{
+        let sql = `SELECT * FROM Category_Data`;
+        db.all(sql, (err,row)=>{
+            if(err)
+            {
+                reject(err);
+            }
+            else{
+                // console.log(typeof(row));
+                resolve(row);
+            }
+        })
+    })
+}
+
+exports.getAllCategoryDataBycatId =(cat_id)=>{
+    return new Promise((resolve, reject)=>{
+        let sql = `SELECT * FROM Category_Data WHERE cat_Id = ?`;
+        db.all(sql, [cat_id], (err,row)=>{
+            if(err)
+            {
+                reject(err);
+            }
+            else{
+                // console.log((row));
+                resolve(row);
+            }
+        })
+    })
+}
+
+// async function callfunc(){
+//     const data = await exports.getAllCategoryData();
+// }
+
+// const b = callfunc();
+// // const a = b.some('Pakistan');
+// console.log(b);
+// console.log(typeof(b));
+
+// exports.getAllCategoryDataBycatId(1)
