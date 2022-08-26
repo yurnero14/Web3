@@ -50,6 +50,8 @@ const corsOptions = {
     credentials: true
 };
 
+app.use(cors(corsOptions));
+
 // passport.use(new LocalStrategy(async function verify(username, password, cb){
 //     const user = await userDao.getUser(email, password);
 //     if(!user){

@@ -29,7 +29,7 @@ exports.createRound = (round) =>{
                 // const result = exports.getRound(this.lastID);
                 // resolve(exports.getRoundId(round.cat_Id, round.letter)); //this will give me the last inserted row 
                 // console.log(this.lastID);
-                resolve({id: this.lastID, cat_Id: round.cat_Id, letter: round.letter, difficulty: round.difficulty});
+                resolve({id: this.lastID, cat_Id: round.cat_Id, letter: round.letter, difficulty: round.difficulty, StartTime: round.StartTime});
             }
         });
     });
