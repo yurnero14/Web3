@@ -318,3 +318,25 @@ exports.getRoundsPlayedByUser=(user_id)=>{
 }
 
 // exports.getRoundsPlayedByUser(2);
+
+exports.getScore = (user_id, round_id) =>{
+    return new Promise ((resolve, reject)=>{
+        const sql = `SELECT score from Responses where user_id =? AND round_id = ?`;
+        db.get(sql,[user_id, round_id], (err, row)=>{
+            if(err){
+                reject(err);
+                return;
+            }
+            if(row === undefined){
+                resolve({error: 'Response not found'});
+            }
+            else{
+                // console.log("iam here");
+                // console.log(row);
+                resolve(row);
+            }
+        })
+    })
+}
+
+exports.getScore(2,123);

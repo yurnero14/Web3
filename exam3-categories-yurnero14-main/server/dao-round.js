@@ -119,6 +119,7 @@ exports.getLetter = (id) =>{
     })
 }
 
+
 exports.getRoundList = (cat_Id, letter) =>{
     return new Promise ((resolve, reject)=>{
         const sql = `SELECT * from rounds where cat_Id =? and letter =?`;
@@ -138,6 +139,22 @@ exports.getRoundList = (cat_Id, letter) =>{
     })
 }
 exports.getRoundList(2, 'l');
+
+
+exports.getCategoryId=(id)=>{
+    return new Promise ((resolve, reject)=>{
+        const sql = `SELECT cat_Id from rounds where id =?`;
+        db.get(sql, [id], (err, row)=>{
+            if(err){
+                reject(err);
+                return;
+            }
+            else{
+                resolve(row);
+            }
+        } );
+    })
+}
 
 //get category//
 //get difficulty//

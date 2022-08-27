@@ -602,175 +602,64 @@ console.log("same is:", same);
 
 })
 
-// app.put('/api/scoreCalc/:respId', isLoggedIn, async(req, res)=>{
-//   const resp = await resDao.getroundId(req.params.respId);
-//   const round = await rDao.getRound(resp.round_id);
-//   const catData= await catDao.getAllCategoryData();
-//   const count = await rDao.countRoundId(round.cat_Id, round.letter);
-//   const answ = await resDao.getAllanswersfromroundId(resp.round_id);
-//   const userlist = await resDao.getUserlist(resp.round_id);
-//   const useresp = await resDao.getAllanswersbyUserId(req.user.id);
-//   let score = 0;
-//   if(round.difficulty===1){
-//     if(resp.answers.length<2){
-//       await resDao.storeScore(score,req.params.respId, req.user.id);
-//       return res.status(422).json({error: `Incomplete answer`})
-//     }
-//     else{
+app.get('/api/score', isLoggedIn, async(req, res)=>{
+  let score_country=0;
+  let score_animals=0;
+  let score_color=0;
+  
+  try{
+    
+   
+    const listofUserRounds = await resDao.getRoundsPlayedByUser(req.user.id);
+    console.log(listofUserRounds);
+    for(let i =0; i<listofUserRounds.length; i++)
+    {
+      console.log(listofUserRounds[i])
+      let score = await resDao.getScore(req.user.id, listofUserRounds[i]);
+      console.log("score is:", score.score);
+      let catid= await rDao.getCategoryId(listofUserRounds[i]);
+      console.log(catid);
+      if(score.score!==null){
+        if(catid.cat_Id===1){
+          score_animals=score_animals+score.score;
+        }
+        if(catid.cat_Id===2){
+          score_country=score_country+score.score;
+        }
+        if(catid.cat_Id===3){
+          score_color=score_color+score.score;
+        }
+        
+      }
+      else{
+        score_animals=score_animals+0;
+        score_country=score_country+0;
+        score_color=score_color+0;
+    }
+    }
+    // let score = await resDao.getScore(req.user.id, req.params.roundId);
+    // console.log("score is: ", score);
+   
 
-//       resp.answers.forEach(element => {
-//         if(catData.some(element)){
-//           if(count<2){
-//             score=score+5;
+    
+      // if(req.body.letter.toUpperCase()){
+      //   req.body.letter = req.body.letter.toLowerCase();
+      // }
+      // const result = await rDao.countRoundId(cdId, req.body.letter);
+      let result={
+        Animals: score_animals,
+        Countries: score_country,
+        Colors: score_color
+      }
+      return res.status(200).json(result);
+   
 
-//           }
-//           if((count>2 && answ.some(element)===false))
-//           {
-//             score=score+10;
-//           }
-//           if((count>2 && answ.some(element)===true && userlist.some(req.user.id)===false))
-//           {
-//             score=score+5;
-//           }
-//           if((count>2 && answ.some(element)===true && userlist.some(req.user.id)===true && useresp.some(element)===true))
-//           {
+  }
+  catch(err){
+    res.status(501).json();
+  }
+})
 
-//             score=score+10;
-//           }
-
-
-
-
-//         }
-//         else{
-//           score = score + 0;
-//         }
-
-//       });
-//       const result = await resDao.storeScore(score,req.params.respId, req.user.id);
-//       return res.status(200).json(result);
-//     }
-//   }
-
-//   else if(round.difficulty===2){
-//     if(resp.answers.length<3){
-//       await resDao.storeScore(score,req.params.respId, req.user.id);
-//       return res.status(422).json({error: `Incomplete answer`})
-//     }
-//     else{
-//       resp.answers.forEach(element => {
-//         if(catData.some(element)){
-//           if(count<2){
-//             score=score+(5*2);
-
-//           }
-//           if((count>2 && answ.some(element)===false))
-//           {
-//             score=score+(10*2);
-//           }
-//           if((count>2 && answ.some(element)===true && userlist.some(req.user.id)===false))
-//           {
-//             score=score+(5*2);
-//           }
-//           if((count>2 && answ.some(element)===true && userlist.some(req.user.id)===true && useresp.some(element)===true))
-//           {
-
-//             score=score+(10*2);
-//           }
-
-//         }
-//         else{
-//           score = score + 0;
-//         }
-
-//       });
-
-//     }
-//     const result = await resDao.storeScore(score,req.params.respId, req.user.id);
-//     return res.status(200).json(result);
-
-//   }
-//   else if(round.difficulty===3){
-//     if(resp.answers.length<4){
-//       await resDao.storeScore(score,req.params.respId, req.user.id);
-//       return res.status(422).json({error: `Incomplete answer`})
-//     }
-//     else{
-//       resp.answers.forEach(element => {
-//         if(catData.some(element)){
-//           if(count<2){
-//             score=score+(5*3);
-
-//           }
-//           if((count>2 && answ.some(element)===false))
-//           {
-//             score=score+(10*3);
-//           }
-//           if((count>2 && answ.some(element)===true && userlist.some(req.user.id)===false))
-//           {
-//             score=score+(5*3);
-//           }
-//           if((count>2 && answ.some(element)===true && userlist.some(req.user.id)===true && useresp.some(element)===true))
-//           {
-
-//             score=score+(10*3);
-//           }
-
-//         }
-//         else{
-//           score = score + 0;
-//         }
-
-//       });
-
-//     }
-//     const result = await resDao.storeScore(score,req.params.respId, req.user.id);
-//     return res.status(200).json(result);
-
-//   }
-
-//   else if(round.difficulty===4){
-//     if(resp.answers.length<6){
-//       await resDao.storeScore(score,req.params.respId, req.user.id);
-//       return res.status(422).json({error: `Incomplete answer`})
-//     }
-//     else{
-//       resp.answers.forEach(element => {
-//         if(catData.some(element)){
-//           if(count<2){
-//             score=score+(5*4);
-
-//           }
-//           if((count>2 && answ.some(element)===false))
-//           {
-//             score=score+(10*4);
-//           }
-//           if((count>2 && answ.some(element)===true && userlist.some(req.user.id)===false))
-//           {
-//             score=score+(5*4);
-//           }
-//           if((count>2 && answ.some(element)===true && userlist.some(req.user.id)===true && useresp.some(element)===true))
-//           {
-
-//             score=score+(10*4);
-//           }
-
-//         }
-//         else{
-//           score = score + 0;
-//         }
-
-//       });
-
-//     }
-//     const result = await resDao.storeScore(score,req.params.respId, req.user.id);
-//     return res.status(200).json(result);
-
-//   }
-
-
-
-// })
 
 // activate the server
 const PORT = 3001;
