@@ -14,37 +14,45 @@ function LoginForm(props) {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-        <Alert
-            dismissible
-            show={show}
-            onClose={() => setShow(false)}
-            variant="danger">
-            {errorMessage}
-          </Alert>
-      <Form.Group controlId="email">
-        <Form.Label>email</Form.Label>
-        <Form.Control
-          type="email"
-          value={email}
-          onChange={(ev) => setEmail(ev.target.value)}
-          required={true}
-        />
-      </Form.Group>
+    <Row >
+      <Col></Col>
+      <Col>
+        <Form onSubmit={handleSubmit}>
+            <Alert
+                dismissible
+                show={show}
+                onClose={() => setShow(false)}
+                variant="danger">
+                {errorMessage}
+              </Alert>
+          <Form.Group controlId="email">
+            <Form.Label>email</Form.Label>
+            <Form.Control
+              type="email"
+              value={email}
+              onChange={(ev) => setEmail(ev.target.value)}
+              required={true}
+            />
+          </Form.Group>
 
-      <Form.Group controlId="password">
-        <Form.Label>Password</Form.Label>
-        <Form.Control
-          type="password"
-          value={password}
-          onChange={(ev) => setPassword(ev.target.value)}
-          required={true}
-          minLength={6}
-        />
-      </Form.Group>
+          <Form.Group controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={(ev) => setPassword(ev.target.value)}
+              required={true}
+              minLength={6}
+            />
+          </Form.Group>
 
-      <Button type="submit">Login</Button>
-    </Form>
+          <Button type="submit">Login</Button>
+        </Form>
+      </Col>
+      <Col>
+      </Col>
+    </Row>
+    
   );
 }
 
