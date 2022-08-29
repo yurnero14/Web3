@@ -48,11 +48,11 @@ function LoginForm(props) {
   );
 }
 
-function LogoutButton(props) {
+function LogoutButton(props) { 
   return (
     <Row>
       <Col>
-        <Button variant="outline-primary" onClick={props.logout}>
+        <Button variant="success" onClick={props.logout}>
           Logout
         </Button>
       </Col>
