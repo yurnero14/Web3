@@ -411,6 +411,7 @@ console.log("same is:", same);
       console.log(round.difficulty);
       console.log(ans.length);
       console.log(ans[0][0].toLowerCase());
+      
       // console.log(data);
       if(round.difficulty===1 && ans.length<2){
         score=0;
@@ -420,7 +421,7 @@ console.log("same is:", same);
       if(round.difficulty===1 && ans.length>=2){
       for(let i=0; i<ans.length; i++){
         if(ans[i][fl].toLowerCase()===round.letter && data.some(x=>x.Data===ans[i])===true){
-          if(count<2){
+          if(count<=2){
             console.log("I am here");
             score=score + 5;
           }
@@ -429,19 +430,27 @@ console.log("same is:", same);
           //apna answers check kro 
           //all resp has all resps from relevant rounds
           //userresps has particular useresps on relevant rounds 
-          if(count>2 && (allresp.some(x=>x.some(y=>y===ans[i])))===false ){
+          else if(count>2 && (allresp.some(x=>x==ans[i]))===false){
+            console.log("I am here where count >2 clause 1");
             score=score + 10;
           }
-          if(count>2 && (allresp.some(x=>x.some(y=>y===ans[i])))===true && (userResp.some(x=>x.some(y=>y===ans[i])))===false){
+          else if(count>2 && (allresp.some(x=>x==ans[i]))===true && (userResp.some(x=>x==ans[i]))===false){
+            console.log("I am here where count >2 clause 2");
             score=score + 5;
           }
           // if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===true){
           //   score=score + 0;
           // }
-          if(count>2 && notplayedbyuser===[]){
+          else if(count>2 && notplayedbyuser===[]){
+            console.log("I am here where count >2 clause 3");
             score=score+10
           }
-          if(count>2 && respnotofuser.some(x=>x.some(y=>y===ans[i]))===true){
+          else if(count>2 && (userResp.some(x=>x==ans[i]))===true && (allresp.some(x=>x==ans[i]))===true){
+            console.log("I am here where count >2 clause 3 revised");
+            score=score+10
+          }
+          else if(count>2 && respnotofuser.some(x=>x==ans[i])===true){
+            console.log("I am here where count >2 clause 4");
             score=score+5
           }
 
@@ -597,6 +606,7 @@ console.log("same is:", same);
 
   }
   catch(err){
+    console.log(err);
     res.status(500).json();
   }
 
@@ -656,9 +666,12 @@ app.get('/api/score', isLoggedIn, async(req, res)=>{
 
   }
   catch(err){
+    console.log(err);
     res.status(501).json();
   }
 })
+
+
 
 
 // activate the server
