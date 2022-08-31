@@ -464,10 +464,11 @@ console.log("same is:", same);
         score=0;
         return res.status(422).json({error: `Incomplete answer`})
       }
-      else if(round.difficulty===2 && ans.length>=3){
+      if(round.difficulty===2 && ans.length>=3){
         for(let i=0; i<ans.length; i++){
-          if(ans[i][fl].toLowerCase()==round.letter && data.some(x=>x.Data==ans[i])===true){
-            if(count<2){
+          if(ans[i][fl].toLowerCase()===round.letter && data.some(x=>x.Data===ans[i])===true){
+            if(count<=2){
+              console.log("I am here");
               score=score + (5*2);
             }
             //if count >2 tou phir check krna hai kay response jo hai wo pehle exist krta hai ya nai letter aur category ko 
@@ -475,20 +476,28 @@ console.log("same is:", same);
             //apna answers check kro 
             //all resp has all resps from relevant rounds
             //userresps has particular useresps on relevant rounds 
-            if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===false ){
+            else if(count>2 && (allresp.some(x=>x==ans[i]))===false){
+              console.log("I am here where count >2 clause 1");
               score=score + (10*2);
             }
-            if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===false){
+            else if(count>2 && (allresp.some(x=>x==ans[i]))===true && (userResp.some(x=>x==ans[i]))===false){
+              console.log("I am here where count >2 clause 2");
               score=score + (5*2);
             }
             // if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===true){
             //   score=score + 0;
             // }
-            if(count>2 && notplayedbyuser===[]){
-              score=score+(10*2)
+            else if(count>2 && notplayedbyuser===[]){
+              console.log("I am here where count >2 clause 3");
+              score=score+(10*2);
             }
-            if(count>2 && respnotofuser.some(x=>x.some(y=>y==ans[i]))===true){
-              score=score+(5*2)
+            else if(count>2 && (userResp.some(x=>x==ans[i]))===true && (allresp.some(x=>x==ans[i]))===true){
+              console.log("I am here where count >2 clause 3 revised");
+              score=score+(10*2);
+            }
+            else if(count>2 && respnotofuser.some(x=>x==ans[i])===true){
+              console.log("I am here where count >2 clause 4");
+              score=score+(5*2);
             }
   
           }
@@ -496,17 +505,16 @@ console.log("same is:", same);
             score=score + 0;
           }
   
-        }
-
-      }
+        }}
       else if(round.difficulty===3 && ans.length<4){
         score=0;
         return res.status(422).json({error: `Incomplete answer`})
       }
-      else if(round.difficulty===3 && ans.length>=4){
+      if(round.difficulty===3 && ans.length>=4){
         for(let i=0; i<ans.length; i++){
-          if(ans[i][fl].toLowerCase()===round.letter && data.some(x=>x.Data==ans[i])===true){
-            if(count<2){
+          if(ans[i][fl].toLowerCase()===round.letter && data.some(x=>x.Data===ans[i])===true){
+            if(count<=2){
+              console.log("I am here");
               score=score + (5*3);
             }
             //if count >2 tou phir check krna hai kay response jo hai wo pehle exist krta hai ya nai letter aur category ko 
@@ -514,20 +522,28 @@ console.log("same is:", same);
             //apna answers check kro 
             //all resp has all resps from relevant rounds
             //userresps has particular useresps on relevant rounds 
-            if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===false ){
+            else if(count>2 && (allresp.some(x=>x==ans[i]))===false){
+              console.log("I am here where count >2 clause 1");
               score=score + (10*3);
             }
-            if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===false){
+            else if(count>2 && (allresp.some(x=>x==ans[i]))===true && (userResp.some(x=>x==ans[i]))===false){
+              console.log("I am here where count >2 clause 2");
               score=score + (5*3);
             }
             // if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===true){
             //   score=score + 0;
             // }
-            if(count>2 && notplayedbyuser===[]){
-              score=score+(10*3)
+            else if(count>2 && notplayedbyuser===[]){
+              console.log("I am here where count >2 clause 3");
+              score=score+(10*3);
             }
-            if(count>2 && respnotofuser.some(x=>x.some(y=>y==ans[i]))===true){
-              score=score+(5*3)
+            else if(count>2 && (userResp.some(x=>x==ans[i]))===true && (allresp.some(x=>x==ans[i]))===true){
+              console.log("I am here where count >2 clause 3 revised");
+              score=score+(10*3);
+            }
+            else if(count>2 && respnotofuser.some(x=>x==ans[i])===true){
+              console.log("I am here where count >2 clause 4");
+              score=score+(5*3);
             }
   
           }
@@ -535,17 +551,16 @@ console.log("same is:", same);
             score=score + 0;
           }
   
-        }
-
-      }
+        }}
       else if(round.difficulty===4 && ans.length<6){
         score=0;
         return res.status(422).json({error: `Incomplete answer`})
       }
-      else if(round.difficulty===4 && ans.length>=6){
+      if(round.difficulty===4 && ans.length>=6){
         for(let i=0; i<ans.length; i++){
-          if(ans[i][fl].toLowerCase()===round.letter && data.some(x=>x.Data==ans[i])===true){
-            if(count<2){
+          if(ans[i][fl].toLowerCase()===round.letter && data.some(x=>x.Data===ans[i])===true){
+            if(count<=2){
+              console.log("I am here");
               score=score + (5*4);
             }
             //if count >2 tou phir check krna hai kay response jo hai wo pehle exist krta hai ya nai letter aur category ko 
@@ -553,20 +568,28 @@ console.log("same is:", same);
             //apna answers check kro 
             //all resp has all resps from relevant rounds
             //userresps has particular useresps on relevant rounds 
-            if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===false ){
+            else if(count>2 && (allresp.some(x=>x==ans[i]))===false){
+              console.log("I am here where count >2 clause 1");
               score=score + (10*4);
             }
-            if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===false){
+            else if(count>2 && (allresp.some(x=>x==ans[i]))===true && (userResp.some(x=>x==ans[i]))===false){
+              console.log("I am here where count >2 clause 2");
               score=score + (5*4);
             }
             // if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===true){
             //   score=score + 0;
             // }
-            if(count>2 && notplayedbyuser===[]){
-              score=score+(10*4)
+            else if(count>2 && notplayedbyuser===[]){
+              console.log("I am here where count >2 clause 3");
+              score=score+(10*4);
             }
-            if(count>2 && respnotofuser.some(x=>x.some(y=>y==ans[i]))===true){
-              score=score+(5*4)
+            else if(count>2 && (userResp.some(x=>x==ans[i]))===true && (allresp.some(x=>x==ans[i]))===true){
+              console.log("I am here where count >2 clause 3 revised");
+              score=score+(10*4);
+            }
+            else if(count>2 && respnotofuser.some(x=>x==ans[i])===true){
+              console.log("I am here where count >2 clause 4");
+              score=score+(5*4);
             }
   
           }
@@ -574,9 +597,7 @@ console.log("same is:", same);
             score=score + 0;
           }
   
-        }
-
-      }
+        }}
       // let ArrayString = req.body.answers[0].toString();
       // for(let i=1; i<req.body.answers.length; i++){
       //   ArrayString = ArrayString + "," + req.body.answers[i];
