@@ -671,6 +671,208 @@ app.get('/api/score', isLoggedIn, async(req, res)=>{
   }
 })
 
+app.get('/api/hallofFame', isLoggedIn, async(req, res)=>{
+  const all = await resDao.getAll();
+  let score_country=0;
+  let score_animals=0;
+  let score_color=0;
+  let record=[];
+
+  // console.log(all[0].user_id);
+  try{
+    // return res.status(200).json(all);
+       for(let j=0; j<all.length;j++){
+        let score_country=0;
+      let listofUserRounds = await resDao.getRoundsPlayedByUser(all[j].user_id);
+      console.log("User id is :",all[j].user_id );
+      console.log("list of roundsis :",listofUserRounds);
+      for(let i =0; i<listofUserRounds.length; i++){
+        let score = await resDao.getScore(all[j].user_id, listofUserRounds[i]);
+        console.log("score is:", score.score);
+        let catid= await rDao.getCategoryId(listofUserRounds[i]);
+        // console.log("cdid is:", catid.cat_Id)
+        if(score.score!==null){
+                if(catid.cat_Id===1){
+                  score_animals=score_animals+score.score;
+                }
+                else if(catid.cat_Id===2){
+                  score_country=score_country+score.score;
+                  console.log("score of country:", score_country);
+                }
+                else if(catid.cat_Id===3){
+                  score_color=score_color+score.score;
+                }
+                
+              }
+              else{
+                      score_animals=score_animals+0;
+                      score_country=score_country+0;
+                      score_color=score_color+0;
+                  }
+
+      }
+      let userdetail=await userDao.getUserbyId(all[j].user_id)
+      console.log("user is:", userdetail.name);
+      let partialres={
+        name:userdetail.name,
+        Animals: score_animals,
+        Countries: score_country,
+        Colors: score_color
+      }
+      record.push(partialres);
+      console.log("records are:", record);
+}
+        
+   
+    
+
+    let AniWinner="";
+    let CountryWinner="";
+    let ColorWinner="";
+    let maxColor=0;
+    let maxCountry=0;
+    let maxAnimal=0;
+    
+    for(let x =0; x<record.length;x++){
+      if(record[x].Countries>maxCountry){
+        maxCountry=record[x].Countries;
+        CountryWinner=record[x].name;
+      }
+    }
+
+    for(let x =0; x<record.length;x++){
+      if(record[x].Animals>maxAnimal){
+        maxAnimal=record[x].Animals;
+        
+        AniWinner=record[x].name;
+      }
+    }
+    
+    for(let x =0; x<record.length;x++){
+      if(record[x].Colors>maxColor){
+        maxColor=record[x].Colors;
+        ColorWinner=record[x].name;
+      }
+    }
+    // let score = await resDao.getScore(req.user.id, req.params.roundId);
+    // console.log("score is: ", score);
+   
+    let hof={
+      Category1: "Animals",
+      hof1: AniWinner,
+      hof1score: maxAnimal,
+      Category2: "Countries", 
+      hof2: CountryWinner,
+      hof2score: maxCountry,
+      Category3: "Colors",
+      hof3: ColorWinner,
+      hof3score: maxColor
+    }
+    return res.status(200).json(hof);
+    
+      // return res.status(200).json(all);
+  //     for(let i =0; i<listofUserRounds.length; i++)
+
+  // try{
+    
+  //   const all=resDao.getAll();
+  //   console.log(all);
+  //   for(let j=0; j<all.length;j++){
+  //     let listofUserRounds = await resDao.getRoundsPlayedByUser(all[j].user_id);
+  //     console.log("User id is :",all[j].user_id );
+  //     console.log("list of roundsis :",listofUserRounds);
+  //     for(let i =0; i<listofUserRounds.length; i++)
+  //   {
+  //     console.log(listofUserRounds[i])
+  //     let score = await resDao.getScore(all[j].user_id, listofUserRounds[i]);
+  //     console.log("score is:", score.score);
+  //     let catid= await rDao.getCategoryId(listofUserRounds[i]);
+  //     console.log(catid);
+  //     if(score.score!==null){
+  //       if(catid.cat_Id===1){
+  //         score_animals=score_animals+score.score;
+  //       }
+  //       if(catid.cat_Id===2){
+  //         score_country=score_country+score.score;
+  //       }
+  //       if(catid.cat_Id===3){
+  //         score_color=score_color+score.score;
+  //       }
+        
+  //     }
+  //     else{
+  //       score_animals=score_animals+0;
+  //       score_country=score_country+0;
+  //       score_color=score_color+0;
+  //   }
+  //   }
+  //   let userdetail=userDao.getUserbyId(all[j].user_id)
+  //   let partialres={
+  //     name:userdetail.name,
+  //     Animals: score_animals,
+  //     Countries: score_country,
+  //     Colors: score_color
+  //   }
+  //   record.push(partialres);
+  //   console.log("record is:", record);
+  //   }
+  //   let AniWinner="";
+  //   let CountryWinner="";
+  //   let ColorWinner="";
+  //   let maxColor=0;
+  //   let maxCountry=0;
+  //   let maxAnimal=0;
+    
+  //   for(let x =0; x<record.length;x++){
+  //     if(record[x].score_country>maxCountry){
+  //       maxCountry=record[x].score_country;
+  //       CountryWinner=record[x].name;
+  //     }
+  //   }
+
+  //   for(let x =0; x<record.length;x++){
+  //     if(record[x].score_animals>maxAnimal){
+  //       maxAnimal=record[x].score_animals;
+        
+  //       AniWinner=record[x].name;
+  //     }
+  //   }
+    
+  //   for(let x =0; x<record.length;x++){
+  //     if(record[x].score_color>maxColor){
+  //       maxColor=record[x].score_color;
+  //       ColorWinner=record[x].name;
+  //     }
+  //   }
+  //   // let score = await resDao.getScore(req.user.id, req.params.roundId);
+  //   // console.log("score is: ", score);
+   
+  //   let hof={
+  //     Category1: "Animals",
+  //     hof1: AniWinner,
+  //     hof1score: maxAnimal,
+  //     Category2: "Countries", 
+  //     hof2: CountryWinner,
+  //     hof2score: maxCountry,
+  //     Category3: "Colors",
+  //     hof3: ColorWinner,
+  //     hof3score: maxColor
+  //   }
+    
+  //     // if(req.body.letter.toUpperCase()){
+  //     //   req.body.letter = req.body.letter.toLowerCase();
+  //     // }
+  //     // const result = await rDao.countRoundId(cdId, req.body.letter);
+     
+  //     return res.status(200).json(hof);
+   
+
+  }
+  catch(err){
+    console.log(err);
+    res.status(501).json();
+  }
+})
 
 
 

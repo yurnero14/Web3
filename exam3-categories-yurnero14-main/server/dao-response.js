@@ -339,4 +339,19 @@ exports.getScore = (user_id, round_id) =>{
     })
 }
 
-exports.getScore(2,123);
+// 
+exports.getAll=()=>{
+    return new Promise((resolve,reject)=>{
+        const sql = `SELECT DISTINCT user_id FROM Responses`
+        db.all(sql,[],(err, rows)=>{
+            if(err)
+                reject(err);
+            else{
+                console.log(rows);
+                resolve(rows);
+            }
+        })
+    })
+}
+
+exports.getAll();

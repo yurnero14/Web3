@@ -17,6 +17,7 @@ exports.getUserbyId = (id) => {
             }
             else {
                 const user = {id: row.id, email: row.email, name: row.name}
+                
                 resolve(user);
             }
         });
