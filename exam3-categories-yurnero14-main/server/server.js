@@ -694,9 +694,7 @@ app.get('/api/score', isLoggedIn, async(req, res)=>{
 
 app.get('/api/hallofFame', isLoggedIn, async(req, res)=>{
   const all = await resDao.getAll();
-  let score_country=0;
-  let score_animals=0;
-  let score_color=0;
+ 
   let record=[];
 
   // console.log(all[0].user_id);
@@ -704,6 +702,8 @@ app.get('/api/hallofFame', isLoggedIn, async(req, res)=>{
     // return res.status(200).json(all);
        for(let j=0; j<all.length;j++){
         let score_country=0;
+        let score_animals=0;
+        let score_color=0;
       let listofUserRounds = await resDao.getRoundsPlayedByUser(all[j].user_id);
       console.log("User id is :",all[j].user_id );
       console.log("list of roundsis :",listofUserRounds);
