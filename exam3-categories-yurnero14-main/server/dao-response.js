@@ -5,19 +5,7 @@ const db = require('./Db');
 exports.createResponse = (response) =>{
     return new Promise ((resolve, reject)=>{
         const sql = `INSERT into Responses(user_id, round_id) VALUES(?,?)`;
-        // db.run(sql, [response.user_id, response.round_id], (err, row)=>{
-        //     if(err){
-        //         reject(err);
-        //         return;
-        //     }
-        //     if(row === undefined){
-        //         resolve({error: 'Response not found'});
-        //     }
-        //     else{
-                
-        //         resolve(this.L);
-        //     }
-        // })
+       
         db.run(sql,[response.user_id, response.round_id], function (err){
             if(err){
                 reject(err);
@@ -31,12 +19,7 @@ exports.createResponse = (response) =>{
     })
 }
 
-// const res = {
-//     user_id: 1,
-//     round_id: 1
-// }
 
-// console.log((exports.createResponse(res)));
 
 exports.getResponseId = (user_id, round_id) =>{
     return new Promise ((resolve, reject)=>{
@@ -76,7 +59,7 @@ exports.storeAnswers = (response_id, answers) =>{
     });
 }
 
-// console.log(exports.storeAnswers(1, ['a','b','c']));
+
 
 exports.storeScore = (score, response_id)=>{
     return new Promise ((resolve, reject) =>{
@@ -130,7 +113,7 @@ exports.getAnswers=(response_id)=>{
     })
 }
 
-// exports.getAnswers(43);
+
 
 
 exports.getUserlist=(round_id)=>{
@@ -190,20 +173,6 @@ exports.getAllanswersbyUserId=(user_id)=>{
 }
 
 
-// const a = ['ass','bss','css'];
-// const b=a.toString();
-// console.log(a);
-// console.log(b);
-
-
-  
-//   // 👇️ ABC
-//   console.log(getFirstLetters(b));
-//   console.log(typeof(getFirstLetters('Dude,cod,mein')));
-  
-  // 👇️ ONE
-
-
   exports.getResponse=(id)=>{
     return new Promise ((resolve, reject)=>{
         const sql = `SELECT * from Responses where id =?`;
@@ -260,7 +229,7 @@ exports.getAllanswerfromRoundid=(round_id)=>{
     })
 }
 
-exports.getAllanswerfromRoundid(47);
+
 exports.getAllanswersfromRoundandUserid=(round_id, user_id)=>{
     return new Promise ((resolve, reject)=>{
         const sql = `SELECT answers from Responses where round_id =? and user_id=?`;
@@ -289,7 +258,7 @@ exports.getAllanswersfromRoundandUserid=(round_id, user_id)=>{
     })
 }
 
-exports.getAllanswersfromRoundandUserid(43, 2);
+
 
 exports.getRoundsPlayedByUser=(user_id)=>{
     return new Promise ((resolve, reject)=>{
@@ -317,7 +286,7 @@ exports.getRoundsPlayedByUser=(user_id)=>{
     })
 }
 
-// exports.getRoundsPlayedByUser(2);
+
 
 exports.getScore = (user_id, round_id) =>{
     return new Promise ((resolve, reject)=>{

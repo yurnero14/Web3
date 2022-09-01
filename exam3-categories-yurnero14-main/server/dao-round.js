@@ -15,6 +15,21 @@ function Round (id,category,letter,difficulty)
     this.letter = letter;
     this.difficulty = difficulty;
 }
+
+
+exports.getAllrounds=()=>{
+    return new Promise((resolve, reject)=>{
+        const sql=`SELECT * from rounds`
+        db.all(sql, [], (err,rows)=>{
+            if(err)
+            reject(err);
+        else{
+            // console.log(rows);
+            resolve(rows);
+        }
+        })
+    })
+}
 exports.createRound = (round) =>{
     return new Promise((resolve, reject)=>{
         // const cdId = cDao.getCategoryId(category);
@@ -138,7 +153,7 @@ exports.getRoundList = (cat_Id, letter) =>{
         } );
     })
 }
-exports.getRoundList(2, 'l');
+// exports.getRoundList(2, 'l');
 
 
 exports.getCategoryId=(id)=>{

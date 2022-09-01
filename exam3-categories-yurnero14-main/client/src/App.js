@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { useState,useEffect } from 'react';
 import { BrowserRouter, Routes, Route,Navigate} from 'react-router-dom';
-import { CategoryDefault,LoginRoute } from './components/AppRoutes';
+import { CategoryDefault,LoginRoute, FormRoute} from './components/AppRoutes';
 import { Container, Row, Alert, Nav } from 'react-bootstrap';
 import { LogoutButton } from './components/AuthComponents';
 
@@ -10,6 +10,7 @@ import API from './API';
 
 function App() {
   const [round, setRound]=useState([]);
+  const [params, setParams]= useState({Category:"", Difficulty:""});
   const [response, setResponse]=useState("");
   const [loggedIn, setLoggedIn] = useState(false);
   const [message, setMessage] = useState('');
@@ -18,9 +19,10 @@ function App() {
   //getRound for checking
 
 
-  const createRound = (round)=>{
-    setRound(oldRounds =>[[...oldRounds, round]]);
-    API.createRound(round);
+  const createRound = (params)=>{
+
+    setParams(params);
+    API.createRound(params);
 
   }
 
@@ -60,8 +62,23 @@ function App() {
     setUser(null);
     setMessage('');
   };
- 
- 
+  const handleGuestLogin = ()=>{
+		try{
+			const guest={
+				id:0,
+				name:'Guest',
+			}
+			setUser(guest)
+			setLoggedIn(true)
+		}catch(err){
+			throw err
+		}
+	}
+ const getAllrounds = async()=>{
+  const rounds=await API.getAllrounds();
+  setRound(rounds);
+
+ }
  
  
  
@@ -73,10 +90,16 @@ function App() {
      
      <BrowserRouter>
      <Routes>
-      <Route path='/login' element={
+      {/* <Route path='/login' element={
         loggedIn? <Navigate replace to ='/' />:<LoginRoute login = {handleLogin}/>
-      }/>
+      }/> */}
+      <Route path='/' element={
+        loggedIn?<FormRoute round={round} params={params} createRound={createRound}/>:<Navigate to ="/login" replace/> 
+      }>
       <Route path='*' element={<CategoryDefault/>}/>
+      <Route index element= {<h2>Please, specify the path</h2>}/>
+      </Route>
+      <Route path="/login" element={!loggedIn ? <LoginRoute login={handleLogin} guestLogin={handleGuestLogin}/> : <Navigate replace to='/' />} />
      </Routes>
 
      </BrowserRouter>

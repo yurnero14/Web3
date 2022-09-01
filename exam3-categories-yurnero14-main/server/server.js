@@ -52,13 +52,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// passport.use(new LocalStrategy(async function verify(username, password, cb){
-//     const user = await userDao.getUser(email, password);
-//     if(!user){
-//         return cb(null, false, 'Incorrect email or password');
-//     }
-//     return cb(null, user);
-// }));
+
 
 passport.use(new LocalStrategy({
   usernameField: 'email',
@@ -183,17 +177,14 @@ app.post('/api/RoundAndResponse', isLoggedIn, async(req,res)=>{
         StartTime: Math.floor(Date.now() / 1000)
       }
 
-      //TImestamp updation TODO
+      
       const result = await rDao.createRound(round);
-      // const resp = await resDao.createResponse(req.user.id, );
-      // console.log(typeof(result));
-      // const b= parseInt(result);
+      
       const resp = {
         user_id: req.user.id,
         round_id: result.id,
       }
-      // console.log(b);
-      // console.log(typeof(b));
+      
       const reso = await resDao.createResponse(resp);
 
       // await resDao.createResponse(resp);
@@ -230,21 +221,7 @@ app.get('/api/roundId', async(req, res)=>{
     res.status(501).json();
   }
 })
-// app.get('/api/roundIds', async(req, res)=>{
-//   try{
-//     const cdId = await cDao.getCategoryId(req.body.category);
-//     if(cdId.error){
-//       res.status(404).json(cdId);
-//     }
-//     else{
-//       const result = await rDao.getRoundIds(cdId, req.body.letter);
-//       return res.status(200).json(result);
-//     }
-//   }
-//   catch(err){
-//     res.status(501).json();
-//   }
-// })
+
 app.get('/api/countRound', async(req, res)=>{
   try{
     if(Object.keys(req.body).length === 0) {
@@ -298,8 +275,7 @@ app.put('/api/answer/:respId', isLoggedIn, async(req, res)=>{
     console.log("String of answ is:",stringofansw[0].answers);
 
     if(stringofansw[0].answers!==null){
-    // let dummy = stringofansw[0].answers;
-    // console.log("Dummy is:", dummy);
+   
     let words = await uti.stringToarray(stringofansw[0].answers);
     for(let j=0; j<words.length; j++){
       allresp.push(words[j]);
@@ -310,8 +286,7 @@ app.put('/api/answer/:respId', isLoggedIn, async(req, res)=>{
     else if(stringofansw[0].answers===null){
       allresp=allresp;
     }
-    // console.log(typeof(stringofansw[0].answers));
-    // allresp.push(stringofansw[0].answers);
+   
   }
   console.log('all resp are:', allresp);
   let userResp =[];
@@ -336,7 +311,7 @@ app.put('/api/answer/:respId', isLoggedIn, async(req, res)=>{
   }
 
   console.log("resp not of user: ", respnotofuser)
-//getting rounds that are played by user 
+ 
 let same=[]
 for(let i=0; i<listofRounds.length; i++){
   for(let j=0; j<listofUserRounds.length;j++){
@@ -348,10 +323,7 @@ for(let i=0; i<listofRounds.length; i++){
 
 console.log("same is:", same);
 
-//  for(let i=0; i<listofRounds.length; i++){
-//     const resp = await resDao.getAllanswersfromRoundandUserid(listofRounds[i].id, req.user.id)//(listofRounds[i].id);
-//     userResp.push(resp.answers);
-//  }
+
  for(let i = 0; i<same.length; i++){
   const resp= await resDao.getAllanswersfromRoundandUserid(same[i], req.user.id);
   // console.log("Yeh kia hai: ", resp);
@@ -363,29 +335,19 @@ console.log("same is:", same);
     userResp=userResp;
   }
   else{
-  // let words=await uti.stringToarray(stringofansw);
-  //console.log("Yeh words hain:", words);
+ 
   for(let j=0; j<stringofansw.length; j++){
     userResp.push(stringofansw[j]);
   }
 }
-  // userResp.push(resp.answers); //user kay similar round kay answer agye 
+  
  }
  let userRespstring=userResp.toString();
  console.log(userRespstring);
  userResp=uti.stringToarray(userRespstring);
  console.log("User responses are: ", userResp);
   let score = 0;
-  // 1-get response, 2- get round object using rounid (GET ROUND) 3- check for time expoiry
-  //4-calculate score 5- Insert answer and score
-  // console.log(req.user.id);
-  // console.log(req.body.answers);
-  // const letter = await rDao.getLetter(req.params.roundId);
-  // if(Math.floor(Date.now()/1000)-round.StartTime>=60){
-  //   return res.status(422).json({error: `Round has expired`})
-  // }
-
-  // {"answers" : "sarib, bhai, barhy"}
+ 
   const RoundExpiry = uti.TimeExpiry(round.StartTime);
   if(RoundExpiry>=60){
     return res.status(422).json({error: `Round has expired`})
@@ -406,7 +368,7 @@ console.log("same is:", same);
     
 
     else{
-      // const respId = await resDao.getResponseId(req.user.id, req.params.roundId); //this is just checking
+      
       const fl= 0;
       console.log(round.difficulty);
       console.log(ans.length);
@@ -425,11 +387,7 @@ console.log("same is:", same);
             console.log("I am here");
             score=score + 5;
           }
-          //if count >2 tou phir check krna hai kay response jo hai wo pehle exist krta hai ya nai letter aur category ko 
-          // use krkay saray rounds ki list nikal lo aur ab is list pr foreach chala kr responses bulao un responses mein 
-          //apna answers check kro 
-          //all resp has all resps from relevant rounds
-          //userresps has particular useresps on relevant rounds 
+          
           else if(count>2 && (allresp.some(x=>x==ans[i]))===false){
             console.log("I am here where count >2 clause 1");
             score=score + 10;
@@ -438,9 +396,7 @@ console.log("same is:", same);
             console.log("I am here where count >2 clause 2");
             score=score + 5;
           }
-          // if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===true){
-          //   score=score + 0;
-          // }
+         
           else if(count>2 && notplayedbyuser===[]){
             console.log("I am here where count >2 clause 3");
             score=score+10
@@ -471,11 +427,7 @@ console.log("same is:", same);
               console.log("I am here");
               score=score + (5*2);
             }
-            //if count >2 tou phir check krna hai kay response jo hai wo pehle exist krta hai ya nai letter aur category ko 
-            // use krkay saray rounds ki list nikal lo aur ab is list pr foreach chala kr responses bulao un responses mein 
-            //apna answers check kro 
-            //all resp has all resps from relevant rounds
-            //userresps has particular useresps on relevant rounds 
+            
             else if(count>2 && (allresp.some(x=>x==ans[i]))===false){
               console.log("I am here where count >2 clause 1");
               score=score + (10*2);
@@ -484,9 +436,7 @@ console.log("same is:", same);
               console.log("I am here where count >2 clause 2");
               score=score + (5*2);
             }
-            // if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===true){
-            //   score=score + 0;
-            // }
+            
             else if(count>2 && notplayedbyuser===[]){
               console.log("I am here where count >2 clause 3");
               score=score+(10*2);
@@ -517,11 +467,7 @@ console.log("same is:", same);
               console.log("I am here");
               score=score + (5*3);
             }
-            //if count >2 tou phir check krna hai kay response jo hai wo pehle exist krta hai ya nai letter aur category ko 
-            // use krkay saray rounds ki list nikal lo aur ab is list pr foreach chala kr responses bulao un responses mein 
-            //apna answers check kro 
-            //all resp has all resps from relevant rounds
-            //userresps has particular useresps on relevant rounds 
+           
             else if(count>2 && (allresp.some(x=>x==ans[i]))===false){
               console.log("I am here where count >2 clause 1");
               score=score + (10*3);
@@ -530,9 +476,7 @@ console.log("same is:", same);
               console.log("I am here where count >2 clause 2");
               score=score + (5*3);
             }
-            // if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===true){
-            //   score=score + 0;
-            // }
+            
             else if(count>2 && notplayedbyuser===[]){
               console.log("I am here where count >2 clause 3");
               score=score+(10*3);
@@ -563,11 +507,7 @@ console.log("same is:", same);
               console.log("I am here");
               score=score + (5*4);
             }
-            //if count >2 tou phir check krna hai kay response jo hai wo pehle exist krta hai ya nai letter aur category ko 
-            // use krkay saray rounds ki list nikal lo aur ab is list pr foreach chala kr responses bulao un responses mein 
-            //apna answers check kro 
-            //all resp has all resps from relevant rounds
-            //userresps has particular useresps on relevant rounds 
+           
             else if(count>2 && (allresp.some(x=>x==ans[i]))===false){
               console.log("I am here where count >2 clause 1");
               score=score + (10*4);
@@ -576,9 +516,7 @@ console.log("same is:", same);
               console.log("I am here where count >2 clause 2");
               score=score + (5*4);
             }
-            // if(count>2 && (allresp.some(x=>x.some(y=>y==ans[i])))===true && (userResp.some(x=>x.some(y=>y==ans[i])))===true){
-            //   score=score + 0;
-            // }
+           
             else if(count>2 && notplayedbyuser===[]){
               console.log("I am here where count >2 clause 3");
               score=score+(10*4);
@@ -598,18 +536,7 @@ console.log("same is:", same);
           }
   
         }}
-      // let ArrayString = req.body.answers[0].toString();
-      // for(let i=1; i<req.body.answers.length; i++){
-      //   ArrayString = ArrayString + "," + req.body.answers[i];
-      // }
-      /*BHai list nai save horhi*/
-      // console.log(typeof(req.body.answers));
-      // req.body.answers.forEach(element =>{
-      //   if(element[0]!==round.letter){
-      
-
-      //   }
-      // })
+    
       console.log("i am hereeee");
       console.log(score);
       
@@ -668,15 +595,7 @@ app.get('/api/score', isLoggedIn, async(req, res)=>{
         score_color=score_color+0;
     }
     }
-    // let score = await resDao.getScore(req.user.id, req.params.roundId);
-    // console.log("score is: ", score);
    
-
-    
-      // if(req.body.letter.toUpperCase()){
-      //   req.body.letter = req.body.letter.toLowerCase();
-      // }
-      // const result = await rDao.countRoundId(cdId, req.body.letter);
       let result={
         Animals: score_animals,
         Countries: score_country,
@@ -775,8 +694,7 @@ app.get('/api/hallofFame', isLoggedIn, async(req, res)=>{
         ColorWinner=record[x].name;
       }
     }
-    // let score = await resDao.getScore(req.user.id, req.params.roundId);
-    // console.log("score is: ", score);
+   
    
     let hof={
       Category1: "Animals",
@@ -791,102 +709,7 @@ app.get('/api/hallofFame', isLoggedIn, async(req, res)=>{
     }
     return res.status(200).json(hof);
     
-      // return res.status(200).json(all);
-  //     for(let i =0; i<listofUserRounds.length; i++)
-
-  // try{
-    
-  //   const all=resDao.getAll();
-  //   console.log(all);
-  //   for(let j=0; j<all.length;j++){
-  //     let listofUserRounds = await resDao.getRoundsPlayedByUser(all[j].user_id);
-  //     console.log("User id is :",all[j].user_id );
-  //     console.log("list of roundsis :",listofUserRounds);
-  //     for(let i =0; i<listofUserRounds.length; i++)
-  //   {
-  //     console.log(listofUserRounds[i])
-  //     let score = await resDao.getScore(all[j].user_id, listofUserRounds[i]);
-  //     console.log("score is:", score.score);
-  //     let catid= await rDao.getCategoryId(listofUserRounds[i]);
-  //     console.log(catid);
-  //     if(score.score!==null){
-  //       if(catid.cat_Id===1){
-  //         score_animals=score_animals+score.score;
-  //       }
-  //       if(catid.cat_Id===2){
-  //         score_country=score_country+score.score;
-  //       }
-  //       if(catid.cat_Id===3){
-  //         score_color=score_color+score.score;
-  //       }
-        
-  //     }
-  //     else{
-  //       score_animals=score_animals+0;
-  //       score_country=score_country+0;
-  //       score_color=score_color+0;
-  //   }
-  //   }
-  //   let userdetail=userDao.getUserbyId(all[j].user_id)
-  //   let partialres={
-  //     name:userdetail.name,
-  //     Animals: score_animals,
-  //     Countries: score_country,
-  //     Colors: score_color
-  //   }
-  //   record.push(partialres);
-  //   console.log("record is:", record);
-  //   }
-  //   let AniWinner="";
-  //   let CountryWinner="";
-  //   let ColorWinner="";
-  //   let maxColor=0;
-  //   let maxCountry=0;
-  //   let maxAnimal=0;
-    
-  //   for(let x =0; x<record.length;x++){
-  //     if(record[x].score_country>maxCountry){
-  //       maxCountry=record[x].score_country;
-  //       CountryWinner=record[x].name;
-  //     }
-  //   }
-
-  //   for(let x =0; x<record.length;x++){
-  //     if(record[x].score_animals>maxAnimal){
-  //       maxAnimal=record[x].score_animals;
-        
-  //       AniWinner=record[x].name;
-  //     }
-  //   }
-    
-  //   for(let x =0; x<record.length;x++){
-  //     if(record[x].score_color>maxColor){
-  //       maxColor=record[x].score_color;
-  //       ColorWinner=record[x].name;
-  //     }
-  //   }
-  //   // let score = await resDao.getScore(req.user.id, req.params.roundId);
-  //   // console.log("score is: ", score);
-   
-  //   let hof={
-  //     Category1: "Animals",
-  //     hof1: AniWinner,
-  //     hof1score: maxAnimal,
-  //     Category2: "Countries", 
-  //     hof2: CountryWinner,
-  //     hof2score: maxCountry,
-  //     Category3: "Colors",
-  //     hof3: ColorWinner,
-  //     hof3score: maxColor
-  //   }
-    
-  //     // if(req.body.letter.toUpperCase()){
-  //     //   req.body.letter = req.body.letter.toLowerCase();
-  //     // }
-  //     // const result = await rDao.countRoundId(cdId, req.body.letter);
-     
-  //     return res.status(200).json(hof);
-   
+ 
 
   }
   catch(err){
@@ -895,7 +718,17 @@ app.get('/api/hallofFame', isLoggedIn, async(req, res)=>{
   }
 })
 
+app.get('/api/rounds', async(req, res)=>{
+  try{
+    const all = await rDao.getAllrounds();
+    res.status(200).json(all);
 
+   
+  }
+  catch(err){
+    res.status(501).json();
+  }
+})
 
 // activate the server
 const PORT = 3001;

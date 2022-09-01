@@ -5,16 +5,16 @@ const SERVER_URL = "http://localhost:3001";
 
 //create Round and Response
 
-const createRound = async (round) => {
+const createRound = async (params) => {
   const response = await fetch(SERVER_URL + "/api/RoundAndResponse", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      category: round.category,
-      difficulty: round.difficulty,
+      category: params.category,
+      difficulty: params.difficulty,
     }),
   });
-
+console.log("I am here");
   if (!response.ok) {
     const errMessage = await response.json();
     throw errMessage;
@@ -63,5 +63,15 @@ const logOut = async () => {
   if (response.ok) return null;
 };
 
-const API = { createRound, logIn, getUserInfo, logOut };
+const getAllrounds = async()=>{
+  const response = await fetch(SERVER_URL + '/api/rounds');
+  const roundJson = await response.json();
+  if(response.ok){
+    return roundJson.map(r=>new Round(r.id, r.cat_Id, r.letter, r.difficulty, r.StartTime));
+  }
+  else
+    throw roundJson;
+}
+
+const API = { createRound, logIn, getUserInfo, logOut, getAllrounds };
 export default API;

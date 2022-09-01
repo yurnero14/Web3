@@ -1,5 +1,6 @@
 import {Container, Row,Form,FormControl,Button, Navbar,Col} from 'react-bootstrap';
 import {LoginForm} from './AuthComponents';
+import {CategoryForm} from './CategoryForm';
 
 function CategoryDefault(){
     return(
@@ -10,6 +11,24 @@ function CategoryDefault(){
     );
 }
 
+function FormRoute(props){
+  console.log(props);
+  return(
+    <Container fluid className='App'>
+    <Row>
+      <Col>
+        <h1>Enter Category Data</h1>
+      </Col>
+    </Row>
+    <Row >
+      <Col>
+        <CategoryForm  round={props.round} params={props.params} createRound={props.createRound}  />
+      </Col>
+    </Row>
+  </Container>
+  )
+
+}
 function LoginRoute(props) {
     return(
       <>
@@ -27,4 +46,4 @@ function LoginRoute(props) {
     );
   }
 
-  export{CategoryDefault, LoginRoute};
+  export{CategoryDefault, LoginRoute, FormRoute};

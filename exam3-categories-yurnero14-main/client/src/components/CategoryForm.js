@@ -2,44 +2,44 @@ import {Button, Form} from "react-bootstrap";
 import {useState} from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-function generateRandomLetter(){
-    const letters = 'abcdefghijklmnopqrstuvwxyz';
-    return letters[Math.floor(Math.random() * letters.length)];
-  }
+// function generateRandomLetter(){
+//     const letters = 'abcdefghijklmnopqrstuvwxyz';
+//     return letters[Math.floor(Math.random() * letters.length)];
+//   }
 
-function getstartime(){
-    return Math.floor(Date.now() / 1000)
-}
+// function getstartime(){
+//     return Math.floor(Date.now() / 1000)
+// }
 
-function setTimeandLetter(){
-    const a = generateRandomLetter();
-    const b = getstartime();
-    const obj={
-        letter: a,
-        startime: b,
+// function setTimeandLetter(){
+//     const a = generateRandomLetter();
+//     const b = getstartime();
+//     const obj={
+//         letter: a,
+//         startime: b,
 
-    }
-    return obj; 
-}
+//     }
+//     return obj; 
+// }
 function CategoryForm(props){
+    console.log("props are:", props);
     const navigate = useNavigate();
     const location = useLocation();
 
     const [category, setCategory] = useState("");
     const [difficulty, setDifficulty] = useState("");
     //temporary states
-    const [letter, setLetterandstartTime] = useState({letter: "", startime:""});
-    const [startime, setStartime]=useState("");
-    const isAdding = location.state ? false : true;
+    // const [letter, setLetterandstartTime] = useState({letter: "", startime:""});
+    // const [startime, setStartime]=useState("");
+    
     console.log(location.state);
     //category kay props hongy 
     const handleSubmit=(event) =>{
         event.preventDefault();
-        const cat = {category: category, difficulty: difficulty, letter: letter, startime:startime};
-        if(isAdding){
-            props.addCategory(cat);
-        }
-        navigate('/');
+        const cat = {category: category, difficulty: difficulty};
+        props.createRound(cat);
+        
+        // navigate('/');
     }
     
     return(
@@ -65,11 +65,11 @@ function CategoryForm(props){
                     <option value = "4">4</option>
                 </Form.Select>
             </Form.Group>
-            <Button className = "mt-1" variant="primary" type="submit" onClick={(e)=>setLetterandstartTime(setTimeandLetter())}>
+            <Link to={'/responseForm'}>
+            <Button className = "mt-1" variant="primary" type="submit" >
             Create Round </Button>
-            <Link to = '/'>
-            <Button className = "mt-1" variant="danger" > Cancel </Button>
             </Link>
+            
 
 
         </Form>
@@ -77,4 +77,4 @@ function CategoryForm(props){
     //Either we gonna implement the scoring strat on front end or we gonna find a way to work around isLoggedin 
 }
 
-export default CategoryForm;
+export {CategoryForm};
